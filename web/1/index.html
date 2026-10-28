@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0b14">
+  <title>RiftTransfer — Local file transfer</title>
+  <link rel="stylesheet" href="/web/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#home" data-page-link="home" aria-label="RiftTransfer home">
+        <span class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 2 5 13h5l-.5 9L19 10h-5.2L13.5 2Z"/></svg></span>
+        <span class="brand-copy"><strong>RIFT<span>TRANSFER</span></strong><small>PRIVATE. LOCAL. FAST.</small></span>
+      </a>
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-page="home"><span class="nav-icon">⌂</span> Home</button>
+        <button class="nav-item" data-page="send"><span class="nav-icon">↗</span> Send files</button>
+        <button class="nav-item" data-page="receive"><span class="nav-icon">↙</span> Receive files</button>
+        <button class="nav-item" data-page="devices"><span class="nav-icon">▣</span> Devices <span class="nav-count" id="device-count">0</span></button>
+        <button class="nav-item" data-page="history"><span class="nav-icon">◷</span> Transfer history</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="privacy-card"><span class="privacy-dot"></span><div><strong>Local network</strong><small>Files stay on your network</small></div></div>
+        <div class="sidebar-foot">RiftTransfer <span>PROTOTYPE</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark small-mark">ϟ</span><strong>RIFT<span>TRANSFER</span></strong></div>
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong id="page-crumb">Home</strong></div>
+        <div class="topbar-right"><span class="status-pill"><i></i><span id="connection-short">Connecting</span></span><button class="avatar" title="This computer" aria-label="This computer">PC</button></div>
+      </header>
+
+      <section class="page active-page" id="page-home">
+        <div class="welcome-row"><div><p class="eyebrow">YOUR PERSONAL TRANSFER HUB</p><h1>Move files. <span>Without the mess.</span></h1><p class="subheading">Send files between your devices over your local network.</p></div><div class="hero-orb" aria-hidden="true"><span>ϟ</span></div></div>
+        <div class="home-grid">
+          <article class="panel pair-panel">
+            <div class="panel-top"><div><span class="eyebrow">QUICK CONNECT</span><h2>Pair a device</h2></div><span class="tiny-live"><i></i> Hub online</span></div>
+            <p class="muted">Scan this code with your phone camera to open RiftTransfer on the same Wi-Fi network.</p>
+            <div class="qr-frame"><div class="qr-glow"></div><img id="qr" alt="Pairing QR code"></div>
+            <div class="connection-address"><span class="address-icon">⌁</span><span id="connection">Connecting to your local network…</span></div>
+            <button class="button button-primary full-button" id="pair-button"><span>▦</span> Pair a new device</button>
+            <p class="fine-print"><span class="shield-icon">◇</span> Pairing currently uses the prototype's shared token. Device-by-device approvals are not enabled yet.</p>
+          </article>
+          <div class="right-stack">
+            <article class="panel action-panel send-tile"><div class="tile-icon purple-icon">↗</div><div class="tile-copy"><span class="eyebrow">OUTGOING</span><h3>Send files</h3><p>Choose one or more files to transfer to this PC.</p><button class="text-button" data-go="send">Open sender <span>→</span></button></div><div class="tile-art purple-art" aria-hidden="true"></div></article>
+            <article class="panel action-panel receive-tile"><div class="tile-icon cyan-icon">↙</div><div class="tile-copy"><span class="eyebrow">INCOMING</span><h3>Received files</h3><p>Browse files stored in this PC's Received folder.</p><button class="text-button cyan-text" data-go="receive">View received files <span>→</span></button></div><div class="tile-art cyan-art" aria-hidden="true"></div></article>
+            <article class="panel mini-stats"><div><span class="stat-label">AVAILABLE FILES</span><strong id="home-file-count">—</strong></div><div class="stat-divider"></div><div><span class="stat-label">PAIRED DEVICES</span><strong id="home-device-count">0</strong></div><div class="stat-symbol">✳</div></article>
+          </div>
+        </div>
+        <div class="section-heading"><div><span class="eyebrow">RECENT ACTIVITY</span><h2>Latest transfers</h2></div><button class="text-button" data-go="history">View history <span>→</span></button></div>
+        <div class="panel recent-panel" id="home-history"><div class="empty-state compact-empty"><span class="empty-icon">◷</span><div><strong>No transfers in this session yet</strong><p>Your latest activity will appear here.</p></div></div></div>
+      </section>
+
+      <section class="page" id="page-send">
+        <div class="page-heading"><p class="eyebrow">OUTGOING TRANSFERS</p><h1>Send <span>something good.</span></h1><p class="subheading">Choose files and send them to the RiftTransfer hub.</p></div>
+        <div class="send-layout"><article class="panel upload-panel"><div class="panel-top"><div><span class="eyebrow">FILE SELECTION</span><h2>Choose your files</h2></div><span class="tile-icon purple-icon">↗</span></div>
+          <label class="drop-zone" id="drop-zone" for="files"><span class="upload-cloud">⇧</span><strong>Drop files here</strong><span>or click to browse your device</span><small>Multiple files supported · Large files are chunked</small><input id="files" type="file" multiple></label>
+          <div id="selected-files" class="selected-files"><span class="muted">No files selected</span></div>
+          <div class="transfer-progress"><div class="progress-heading"><span id="progress-label">Waiting for files</span><strong id="progress-percent">0%</strong></div><div class="progress-track"><div id="progress-fill"></div></div><div class="progress-meta"><span id="progress-size">0 MB transferred</span><span id="progress-speed">— MB/s</span></div></div>
+          <div class="status-message" id="status" role="status" aria-live="polite"></div>
+          <button class="button button-primary full-button" id="send" disabled><span>↗</span> Start transfer</button>
+        </article>
+        <aside class="panel tip-panel"><div class="tile-icon orange-icon">✦</div><h3>Before you send</h3><ul class="tip-list"><li><span>01</span> Keep both devices on the same Wi-Fi network.</li><li><span>02</span> Leave this browser tab open until the transfer finishes.</li><li><span>03</span> Files are saved to the PC's <code>Received</code> folder.</li></ul><div class="security-note"><span>!</span><p><strong>Privacy note</strong><br>This prototype uses a shared pairing token. Don't use it on a network with people you don't trust until individual device authorization is implemented.</p></div></aside></div>
+      </section>
+
+      <section class="page" id="page-receive">
+        <div class="page-heading"><p class="eyebrow">INCOMING & STORED FILES</p><h1>Your <span>file library.</span></h1><p class="subheading">Files currently stored in this PC's Received folder.</p></div>
+        <div class="panel files-panel"><div class="panel-top"><div><span class="eyebrow">LOCAL STORAGE</span><h2>Available files</h2></div><button class="button button-quiet" id="refresh">↻ Refresh</button></div><div id="received" class="file-list"><div class="empty-state"><span class="empty-icon">▤</span><strong>Loading files…</strong></div></div></div>
+        <p class="page-footnote">Downloading a file retrieves it from the PC hosting RiftTransfer. This is not a cloud drive.</p>
+      </section>
+
+      <section class="page" id="page-devices">
+        <div class="page-heading"><p class="eyebrow">CONNECTION MANAGEMENT</p><h1>Your <span>devices.</span></h1><p class="subheading">A clear place to manage trusted phones and computers.</p></div>
+        <div class="security-banner"><div class="banner-icon">!</div><div><strong>Device approvals are the next backend upgrade.</strong><p>This current server shares one token across connected browsers. The device list below is a design placeholder, not a security boundary. Don't treat connected devices as individually authorized yet.</p></div></div>
+        <div class="panel devices-panel"><div class="panel-top"><div><span class="eyebrow">KNOWN CONNECTIONS</span><h2>Connected devices</h2></div><span class="badge-muted">Prototype</span></div><div class="empty-state"><span class="empty-icon">▣</span><strong>Individual device identities aren't enabled yet</strong><p>Next, we'll add pairing requests, approval on the PC, separate device tokens, and a revoke-access control.</p><button class="button button-secondary" data-go="home">Back to pairing</button></div></div>
+      </section>
+
+      <section class="page" id="page-history">
+        <div class="page-heading"><p class="eyebrow">TRANSFER LOG</p><h1>Every move, <span>in one place.</span></h1><p class="subheading">Activity recorded during this browser session.</p></div>
+        <div class="panel history-panel"><div class="panel-top"><div><span class="eyebrow">RECENT ACTIVITY</span><h2>Transfer history</h2></div><button class="button button-quiet" id="clear-history">Clear history</button></div><div id="history-list"><div class="empty-state"><span class="empty-icon">◷</span><strong>No transfers recorded yet</strong><p>Completed and failed transfers will appear here while this page remains open.</p></div></div></div>
+      </section>
+      <footer class="app-footer"><span>RIFTTRANSFER <span class="footer-dot">●</span> LOCAL FILE TRANSFER</span><span>Made for your own devices.</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/web/app.js"></script>
+</body>
+</html>

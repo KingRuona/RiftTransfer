@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c0b18">
+  <title>RiftTransfer</title>
+  <link rel="stylesheet" href="/web/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" data-page="home">
+        <span class="brand-mark">R</span>
+        <span>RIFT<span class="brand-light">TRANSFER</span></span>
+      </a>
+
+      <div class="side-label">WORKSPACE</div>
+      <nav>
+        <button class="nav-item active" data-page="home">⌂ <span>Overview</span></button>
+        <button class="nav-item" data-page="send">↗ <span>Send files</span></button>
+        <button class="nav-item" data-page="receive">↙ <span>Receive files</span></button>
+        <button class="nav-item" data-page="devices">▦ <span>Devices</span><span id="pending-badge" class="badge hidden">0</span></button>
+        <button class="nav-item" data-page="history">◷ <span>History</span></button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="connection-dot"></div>
+        <div><strong>Local network</strong><small id="network-label">Checking connection…</small></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">PRIVATE FILE TRANSFER</div>
+          <h1 id="page-title">Overview</h1>
+        </div>
+        <div class="top-actions">
+          <span class="status-pill"><span class="status-dot"></span><span id="connection-label">Starting…</span></span>
+        </div>
+      </header>
+
+      <div id="notice" class="notice hidden"></div>
+
+      <!-- OVERVIEW -->
+      <section class="page active" id="page-home">
+        <div class="hero">
+          <div class="hero-copy">
+            <span class="eyebrow accent">YOUR FILES. YOUR DEVICES.</span>
+            <h2>Move files.<br><span class="gradient-text">Stay in control.</span></h2>
+            <p>Transfer photos, videos, documents and more across your local network. Every new device requires your approval.</p>
+            <div class="hero-actions">
+              <button class="button primary" data-page="send">↑ Send files</button>
+              <button class="button secondary" data-page="receive">↓ Receive files</button>
+            </div>
+          </div>
+          <div class="hero-orb" aria-hidden="true"><div class="orb-core">R</div></div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><span>PAIRED DEVICES</span><strong id="stat-devices">—</strong><small>Approved devices</small></div>
+          <div class="stat-card"><span>TRANSFERRED FILES</span><strong id="stat-files">—</strong><small>Available to you</small></div>
+          <div class="stat-card"><span>NETWORK</span><strong class="stat-small" id="stat-ip">—</strong><small>Local address</small></div>
+        </div>
+
+        <div class="content-grid">
+          <div class="panel">
+            <div class="panel-heading"><div><span class="eyebrow">QUICK CONNECT</span><h3>Pair a device</h3></div><span class="mini-icon">⌁</span></div>
+            <p class="muted">Scan this QR code on your phone. You must approve its request on this PC before it can transfer files.</p>
+            <div class="qr-wrap"><img id="pair-qr" alt="Device pairing QR code" class="qr-image hidden"><div id="qr-placeholder" class="qr-placeholder">QR<br>CODE</div></div>
+            <div id="pair-code-label" class="pair-code">Generate a pairing code</div>
+            <p id="pair-expiry" class="muted small center"></p>
+            <button class="button primary full" id="generate-qr">Generate pairing QR</button>
+          </div>
+
+          <div class="panel">
+            <div class="panel-heading"><div><span class="eyebrow">ACCESS CONTROL</span><h3>Waiting for approval</h3></div><span id="pending-count" class="count-pill">0</span></div>
+            <p class="muted">Only approve devices you recognize.</p>
+            <div id="pending-preview" class="empty-state">No devices waiting for approval.</div>
+            <button class="button secondary full" data-page="devices">Manage devices</button>
+          </div>
+        </div>
+
+        <div class="panel recent-panel">
+          <div class="panel-heading"><div><span class="eyebrow">ACTIVITY</span><h3>Recent files</h3></div><button class="text-button" data-page="history">View history →</button></div>
+          <div id="recent-files" class="file-list"><div class="empty-state">Your transfers will appear here.</div></div>
+        </div>
+      </section>
+
+      <!-- SEND -->
+      <section class="page" id="page-send">
+        <div class="page-intro"><p>Send files from this PC to an approved device.</p></div>
+        <div class="panel">
+          <label class="field-label" for="send-target">SEND TO DEVICE</label>
+          <select id="send-target"><option value="">Choose an approved device</option></select>
+          <div id="drop-zone" class="drop-zone">
+            <div class="upload-icon">↑</div>
+            <h3>Drop your files here</h3>
+            <p class="muted">Or select files from your computer.</p>
+            <label class="button secondary" for="send-files">Choose files</label>
+            <input id="send-files" type="file" multiple hidden>
+            <div id="selected-files" class="selected-files"></div>
+          </div>
+          <div class="progress-track hidden" id="send-progress-track"><div id="send-progress-bar" class="progress-bar"></div></div>
+          <p id="send-status" class="muted small"></p>
+          <button id="start-send" class="button primary" disabled>Send selected files</button>
+        </div>
+      </section>
+
+      <!-- RECEIVE -->
+      <section class="page" id="page-receive">
+        <div class="page-intro"><p>Files uploaded by this device or explicitly shared with it appear here.</p></div>
+        <div class="panel">
+          <div class="panel-heading"><div><span class="eyebrow">YOUR INBOX</span><h3>Available files</h3></div><button id="refresh-files" class="button secondary">↻ Refresh</button></div>
+          <div id="receive-files" class="file-list"><div class="empty-state">Loading files…</div></div>
+        </div>
+      </section>
+
+      <!-- DEVICES -->
+      <section class="page" id="page-devices">
+        <div class="page-intro"><p>Approve new connections, set permissions, or revoke a device's access.</p></div>
+        <div class="panel">
+          <div class="panel-heading"><div><span class="eyebrow">REVIEW ACCESS</span><h3>Pending requests</h3></div><button id="refresh-pending" class="button secondary">↻ Refresh</button></div>
+          <div id="pending-requests" class="device-list"><div class="empty-state">No pending requests.</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-heading"><div><span class="eyebrow">TRUSTED DEVICES</span><h3>Paired devices</h3></div></div>
+          <div id="paired-devices" class="device-list"><div class="empty-state">Loading devices…</div></div>
+        </div>
+      </section>
+
+      <!-- HISTORY -->
+      <section class="page" id="page-history">
+        <div class="page-intro"><p>Review files currently managed by RiftTransfer.</p></div>
+        <div class="panel">
+          <div class="panel-heading"><div><span class="eyebrow">TRANSFER LOG</span><h3>File history</h3></div><button id="refresh-history" class="button secondary">↻ Refresh</button></div>
+          <div id="history-files" class="file-list"><div class="empty-state">Loading history…</div></div>
+        </div>
+      </section>
+
+      <footer>RiftTransfer <span>•</span> Local transfers, under your control.</footer>
+    </main>
+  </div>
+
+  <script src="/web/app.js"></script>
+</body>
+</html>
